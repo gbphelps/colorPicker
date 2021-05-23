@@ -3,6 +3,7 @@ import mainColor from './ColorObject';
 import allEqualExcept from './utils/allEqualExcept';
 import methods from './colorMethods/index';
 import resizeEvent from './resizeEvents';
+import { CHAN_MAX } from './colorMathConstants';
 
 const MARGIN = 20;
 
@@ -12,7 +13,6 @@ export default function buildChannels(channels, {
   orientation = 'horizontal',
   margin = 24,
   outerMargin = 24,
-  spacing = 0,
   recipient = document.body,
 }) {
   let HH = 0;
@@ -21,8 +21,7 @@ export default function buildChannels(channels, {
 
   const inputContainer = document.createElement('div');
   inputContainer.classList.add('input-container');
-  inputContainer.style.display = 'none'; // TODO DELETE THIS WHEN YOU'RE READY
-  inputContainer.style.margin = `${spacing}px`;
+  inputContainer.style.left = `${MARGIN + pipWidth / 2}px`;
 
   const container = createSVG('svg', {});
 
@@ -63,24 +62,11 @@ export default function buildChannels(channels, {
       height: `${INPUT_HEIGHT}px`,
       display: 'block',
       position: 'absolute',
-      top: `${outerMargin + i * (trackThickness + margin) + (trackThickness / 2) - INPUT_HEIGHT / 2}`,
+      top: `calc(20px + ${i}*(100% - ${MARGIN * 2 + trackThickness}px)/${channels.length - 1})`,
       margin: 0,
+      transform: 'translateX(-50%) translateY(-100%) translateY(-4px)',
     });
 
-    // const label = document.createElement('label');
-    // Object.assign(label.style, {
-    //     userSelect: 'none'
-    // })
-
-    Object.assign(inputContainer.style, {
-      userSelect: 'none',
-      height: `${HH}px`,
-      position: 'absolute',
-      right: '16px',
-    });
-
-    // label.innerHTML = paramLookup[param.channel];
-    // inputContainer.appendChild(label);
     inputContainer.appendChild(input);
     let lastValid = 0;
 
@@ -88,6 +74,11 @@ export default function buildChannels(channels, {
       lastValid = COLOR[param.type][param.channel];
       const value = Math.round(COLOR[param.type][param.channel] * 10) / 10;
       if (document.activeElement !== input) input.value = value.toFixed(1);
+      input.style.left = `${(recipient.getBoundingClientRect().width - MARGIN * 2 - pipWidth) * mainColor.color[param.type][param.channel] / CHAN_MAX[param.type][param.channel]}px`;
+    });
+
+    resizeEvent.subscribe(() => {
+      input.style.left = `${(recipient.getBoundingClientRect().width - MARGIN * 2 - pipWidth) * mainColor.color[param.type][param.channel] / CHAN_MAX[param.type][param.channel]}px`;
     });
 
     input.addEventListener('input', (e) => {
