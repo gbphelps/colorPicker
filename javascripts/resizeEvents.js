@@ -60,7 +60,11 @@ class ResizeEvents {
 
     const numBlocks = 21;
     const blockMargin = 1;
-    const lbWidth = (container.height - 2 * MARGIN - (numBlocks - 1) * blockMargin) / numBlocks * 2 + 3 * MARGIN;
+
+    const lbWidth = (
+      container.height - 2 * MARGIN - (numBlocks - 1) * blockMargin
+    ) / numBlocks * 2 + 3 * MARGIN;
+
     lb.style.width = `${lbWidth}px`;
     const rightWidth = container.width - MARGIN - lbWidth;
 
