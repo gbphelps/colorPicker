@@ -34,6 +34,9 @@ class ResizeEvents {
     const minRatio = 1.6;
     const maxRatio = 1.8;
 
+    ooo.style.height = '450px';
+    ooo.style.width = '800px';
+
     const rect = ooo.getBoundingClientRect();
     const container = {
       height: 0,

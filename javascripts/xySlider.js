@@ -203,6 +203,7 @@ export default function makeXYSlider({
     v.setAttribute('x1', xVal);
     v.setAttribute('x2', xVal);
     inputX.style.left = (xVal + outerMargin) / DIM_RATIO;
+    inputX.style.top = `calc(100% - ${outerMargin}px)`;
     if (document.activeElement !== inputX) inputX.value = COLOR[colorSpace][xChannel].toFixed(1);
 
     h.setAttribute('y1', yVal);
