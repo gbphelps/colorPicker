@@ -10,4 +10,9 @@ export default {
   },
   triangleSlider: {
   },
+  sliderSet: {
+    trackThickness: 8,
+    pipWidth: 12,
+    margin: 20,
+  },
 };

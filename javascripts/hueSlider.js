@@ -26,13 +26,12 @@ export default function hueSlider(target) {
   };
   input.oninput = () => {
     const v = +input.value;
-    if (isNaN(v)) return;
+    if (Number.isNaN(v)) return;
     mainColor.set('hsv', { hue: v });
   };
 
   Object.assign(input.style, {
     position: 'absolute',
-    transform: 'translateY(50%)',
   });
 
   c.hueSlider.set(svg);
@@ -110,6 +109,11 @@ export default function hueSlider(target) {
   }
   resizeEvent.subscribe(resize);
 
+  const leftTransform = `translateX(-100%) translateX(${-Math.sqrt(huePipH ** 2 + huePipW ** 2) / 2 - 4}px)`;
+  const rightTransform = `translateX(${Math.sqrt(huePipH ** 2 + huePipW ** 2) / 2 + 4}px)`;
+  const topTransform = 'translateY(-50%) translateY(-40%)';
+  const bottomTransform = 'translateY(-50%) translateY(40%)';
+
   function setPipFromColor(COLOR, PREV) {
     if (PREV && COLOR.hsv.hue === PREV.hsv.hue) return;
     const x = -huePipW / 2 + RADIUS - thickness / 2;
@@ -117,12 +121,14 @@ export default function hueSlider(target) {
     pipRect.setAttribute('transform', `rotate(${COLOR.hsv.hue - 90})translate(${x} ${y})`);
     const xRot = Math.sin(COLOR.hsv.hue * Math.PI / 180) * (RADIUS - thickness / 2);
     const yRot = -Math.cos(COLOR.hsv.hue * Math.PI / 180) * (RADIUS - thickness / 2);
-    const tx = xRot < 0 ? 'translateX(-100%)' : '';
-    const ty = 'translateY(-50%)';
-    input.style.transform = `${tx}${ty}`;
-    const offset = xRot < 0 ? -huePipH - huePipStroke - 8 : 8;
-    input.style.left = `${xRot + target.getBoundingClientRect().height / 2 + offset}px`;
+
+    input.style.left = `${xRot + target.getBoundingClientRect().height / 2}px`;
     input.style.top = `${yRot + target.getBoundingClientRect().height / 2}px`;
+
+    input.style.transform = 'none';
+    input.style.transform = (xRot > 0 ? rightTransform : leftTransform)
+    + (yRot > 0 ? bottomTransform : topTransform);
+
     if (document.activeElement !== input) input.value = COLOR.hsv.hue.toFixed(0);
   }
 
@@ -131,11 +137,19 @@ export default function hueSlider(target) {
   pipRect.addEventListener('mousedown', (e) => {
     let [x, y] = [e.clientX, e.clientY];
     function move(e) {
-      const delx = e.clientX - x; // note that this needs scaling if svg space is diff from user space
+      // note that this needs scaling if svg space is diff from user space
+      const delx = e.clientX - x;
       const dely = e.clientY - y;
 
-      const xnew = Math.cos((mainColor.color.hsv.hue - 90) / 180 * Math.PI) * (RADIUS - thickness / 2) + delx;
-      const ynew = Math.sin((mainColor.color.hsv.hue - 90) / 180 * Math.PI) * (RADIUS - thickness / 2) + dely;
+      const xnew = Math.cos(
+        (mainColor.color.hsv.hue - 90) / 180 * Math.PI,
+      ) * (RADIUS - thickness / 2
+      ) + delx;
+
+      const ynew = Math.sin(
+        (mainColor.color.hsv.hue - 90) / 180 * Math.PI,
+      ) * (RADIUS - thickness / 2
+      ) + dely;
 
       let angle = Math.atan(ynew / xnew);
       if (xnew < 0) angle = Math.PI + angle;

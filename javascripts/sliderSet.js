@@ -4,15 +4,12 @@ import allEqualExcept from './utils/allEqualExcept';
 import methods from './colorMethods/index';
 import resizeEvent from './resizeEvents';
 import { CHAN_MAX } from './colorMathConstants';
+import c from './constants';
 
-const MARGIN = 20;
+const { sliderSet: { pipWidth, margin, trackThickness } } = c;
 
 export default function buildChannels(channels, {
-  trackThickness = 8,
-  pipWidth = 12,
   orientation = 'horizontal',
-  margin = 24,
-  outerMargin = 24,
   recipient = document.body,
 }) {
   let HH = 0;
@@ -21,7 +18,7 @@ export default function buildChannels(channels, {
 
   const inputContainer = document.createElement('div');
   inputContainer.classList.add('input-container');
-  inputContainer.style.left = `${MARGIN + pipWidth / 2}px`;
+  inputContainer.style.left = `${margin + pipWidth / 2}px`;
 
   const container = createSVG('svg', {});
 
@@ -36,7 +33,7 @@ export default function buildChannels(channels, {
     const { height, width } = recipient.getBoundingClientRect();
     WW = width;
     HH = height;
-    trackLength = WW - 2 * MARGIN;
+    trackLength = WW - 2 * margin;
     container.setAttribute('viewBox', `0 0 ${WW} ${HH}`);
     Object.assign(container.style, {
       height: HH,
@@ -49,17 +46,16 @@ export default function buildChannels(channels, {
   channels.forEach((param, i) => {
     const INPUT_HEIGHT = 24;
     const input = document.createElement('input');
-    const rightTransform = `translateX(-100%) translateY(-75%) translateX(${-pipWidth / 2 - 4}px)`;
-    const leftTransform = `translateY(-75%) translateX(${pipWidth / 2 + 4}px)`;
+    const rightTransform = `translateX(-100%) translateY(-67%) translateX(${-pipWidth / 2}px)`;
+    const leftTransform = `translateY(-75%) translateX(${pipWidth / 2}px)`;
 
     Object.assign(input.style, {
       height: `${INPUT_HEIGHT}px`,
       display: 'block',
       position: 'absolute',
-      top: `calc(20px + ${i}*(100% - ${MARGIN * 2 + trackThickness}px)/${channels.length - 1})`,
+      top: `calc(20px + ${i}*(100% - ${margin * 2 + trackThickness}px)/${channels.length - 1})`,
       margin: 0,
       transform: 'none',
-      transition: 'transform .2s',
     });
 
     inputContainer.appendChild(input);
@@ -72,12 +68,12 @@ export default function buildChannels(channels, {
       const value = Math.round(COLOR[param.type][param.channel] * 10) / 10;
       if (document.activeElement !== input) input.value = value.toFixed(1);
       const pct = mainColor.color[param.type][param.channel] / maxChanVal;
-      input.style.left = `${(recipient.getBoundingClientRect().width - MARGIN * 2 - pipWidth) * pct}px`;
+      input.style.left = `${(recipient.getBoundingClientRect().width - margin * 2 - pipWidth) * pct}px`;
       input.style.transform = pct > 0.5 ? rightTransform : leftTransform;
     });
 
     resizeEvent.subscribe(() => {
-      input.style.left = `${(recipient.getBoundingClientRect().width - MARGIN * 2 - pipWidth) * mainColor.color[param.type][param.channel] / CHAN_MAX[param.type][param.channel]}px`;
+      input.style.left = `${(recipient.getBoundingClientRect().width - margin * 2 - pipWidth) * mainColor.color[param.type][param.channel] / CHAN_MAX[param.type][param.channel]}px`;
     });
 
     input.addEventListener('input', (e) => {
@@ -121,8 +117,7 @@ export default function buildChannels(channels, {
     const track = createSVG('rect', {
       width: trackLength,
       height: trackThickness,
-      y: (trackThickness + margin) * i + outerMargin,
-      x: MARGIN,
+      x: margin,
       rx: 2,
       fill: `url(#${gradient.id})`,
     });
@@ -131,7 +126,6 @@ export default function buildChannels(channels, {
       height: trackThickness + 2,
       width: pipWidth,
       fill: 'transparent',
-      y: (trackThickness + margin) * i - 1 + outerMargin,
       stroke: 'white',
       'stroke-width': 2,
       'vector-effect': 'non-scaling-stroke',
@@ -140,14 +134,14 @@ export default function buildChannels(channels, {
     });
 
     resizeEvent.subscribe(() => {
-      const hFree = HH - trackThickness * channels.length - 2 * MARGIN;
+      const hFree = HH - trackThickness * channels.length - 2 * margin;
       const hPadding = hFree / (channels.length - 1);
-      const vPos = MARGIN + (hPadding + trackThickness) * i;
+      const vPos = margin + (hPadding + trackThickness) * i;
 
       track.setAttribute('width', trackLength);
       track.setAttribute('y', vPos);
-      gradient.setAttribute('x1', pipWidth / 2 + MARGIN);
-      gradient.setAttribute('x2', trackLength - pipWidth / 2 + MARGIN);
+      gradient.setAttribute('x1', pipWidth / 2 + margin);
+      gradient.setAttribute('x2', trackLength - pipWidth / 2 + margin);
       pip.setAttribute('y', vPos);
       pipColorSub(mainColor.color);
     });
@@ -168,7 +162,7 @@ export default function buildChannels(channels, {
       ) {
         pip.setAttribute(
           'x',
-          COLOR[param.type][param.channel] / maxChanVal * (trackLength - pipWidth) + MARGIN,
+          COLOR[param.type][param.channel] / maxChanVal * (trackLength - pipWidth) + margin,
         );
       }
     }

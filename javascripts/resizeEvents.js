@@ -72,14 +72,14 @@ class ResizeEvents {
     const rightWidth = container.width - MARGIN - lbWidth;
 
     rc.style.width = `${rightWidth}px`;
-    hsl.style.width = `${(rightWidth - MARGIN) * 0.55}px`;
-    hsv.style.width = `${(rightWidth - MARGIN) * 0.45}px`;
+    hsl.style.width = `${(rightWidth - MARGIN)}px`;
+    hsv.style.width = `${(rightWidth - MARGIN) * 0.35}px`;
 
     rgbcmyk.style.width = `${rightWidth - MARGIN - topHeight}px`;
     rgbcmyk.style.height = `${topHeight}px`;
 
-    rgb.style.height = `${(topHeight - MARGIN) * 0.45}`;
-    cmyk.style.height = `${(topHeight - MARGIN) * 0.55}`;
+    rgb.style.height = `${(topHeight - MARGIN) * 0.43}`;
+    cmyk.style.height = `${(topHeight - MARGIN) * 0.57}`;
   }
 }
 

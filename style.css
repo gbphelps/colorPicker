@@ -13,21 +13,21 @@
 }
 
 input {
-    width: 55px;
-    height: 30px;
+    width: 48px;
+    height: 28px;
     background: transparent;
     outline: none;
     border-radius: 100px;
-    margin: 0 8px;
     color: black;
     text-align: right;
     border: none;
     background: white;
     box-shadow: 0 3px 5px 0 rgba(0,0,0,.15);
-    font-size: 16px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     padding: 0 6px;
+    transition: transform .2s;
 }
 
 body{
@@ -40,7 +40,7 @@ body{
 #lightness-blocks,
 svg {
     /* margin: 8px; */
-    border-radius: 4px;
+    /* border-radius: 4px; */
 }
 
 #lightness-blocks {
@@ -103,3 +103,4 @@ div:hover > .input-container {
     visibility: visible;
     opacity: 1;
 } */
+
