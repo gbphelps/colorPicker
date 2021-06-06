@@ -104,3 +104,6 @@ div:hover > .input-container {
     opacity: 1;
 } */
 
+* {
+    outline: 1px solid red;
+}
