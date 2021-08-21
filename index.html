@@ -17,29 +17,32 @@
     </svg>
 
     <div style="width: 100%; height: 100%; min-width: 300px">
-        <div id="ooo" style="height: 100%; width: 100%; min-width: 570px; min-height: 350px; max-width: 1000px; max-height: 800px;">
+        <div id="ooo" style="
+            height: 100%; 
+            width: 100%; 
+            min-width: 570px; 
+            min-height: 350px; 
+            max-width: 1000px; 
+            max-height: 800px;
+        ">
         <div id="color-editor-container">
         <div style="display: flex; align-items: stretch; height: 100%">
             <div id="lightness-blocks" style="display: flex;">
                 <div id="lightness-blocks-l" style="width: 50%"></div>
                 <div id="lightness-blocks-s" style="width: 50%"></div>
             </div>
-            <div id="right-container" style="width: 100%; display: flex; flex-direction: column;">
-                <div id="top" style="display: flex; align-items: center; height: 60%;">
-                    <div id="main" style="
-                        position: relative;
-                        margin-right: 20px; 
-                        flex-shrink: 0"
-                    >
+            <div id="right-container" style="display: flex; flex-direction: column;">
+                <div id="top" style="display: flex">
+                    <div id="main" style="position: relative">
                     </div>
-                    <div id="rgb-cmyk" style="display: flex; flex-direction: column; justify-content: space-between">
+                    <div id="rgb-cmyk" style="display: flex; justify-content: space-between; flex-direction: column">
                         <div id="rgb" style="position: relative"></div>
                         <div id="cmyk" style="position: relative"></div>
                     </div>
                 </div>
-                <div id="block-sliders" style="display: flex; justify-content: space-between; flex-grow: 1">
-                    <div id="hsl" style="height: 100%; margin-right: 20px"></div>
-                    <div id="hsv" style="height: 100%"></div>
+                <div id="block-sliders" style="display: flex">
+                    <div id="hsl"></div>
+                    <div id="hsv"></div>
                 </div>
             </div>
         </div>

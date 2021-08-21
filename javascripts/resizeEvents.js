@@ -35,6 +35,60 @@ function resizeTop(parentRect) {
   };
 }
 
+function resizeMain(parentRect) {
+  return {
+    height: parentRect.height,
+    width: parentRect.height,
+  };
+}
+
+function resizeRgbCmyk(parentRect) {
+  return {
+    height: parentRect.height,
+    width: parentRect.width - parentRect.height,
+  };
+}
+
+function resizeLeftContent(parentRect) {
+  return {
+    height: parentRect.height,
+    width: 0.15 * parentRect.width,
+  };
+}
+
+function resizeRightContent(parentRect) {
+  return {
+    height: parentRect.height,
+    width: 0.85 * parentRect.width,
+  };
+}
+
+function resizeHsl(parentRect) {
+  return {
+    height: parentRect.height,
+    width: parentRect.width - parentRect.height,
+  };
+}
+
+function resizeHsv(parentRect) {
+  return {
+    height: parentRect.height,
+    width: parentRect.height,
+  };
+}
+
+function resizeRgb(parentRect) {
+  return {
+    height: parentRect.height * 0.4,
+  };
+}
+
+function resizeCmyk(parentRect) {
+  return {
+    height: parentRect.height * 0.5,
+  };
+}
+
 class ResizeEvents {
   constructor() {
     this.subscriptions = [];
@@ -61,20 +115,69 @@ class ResizeEvents {
   }
 
   init() {
+    // outer
     this.addResizeObserver(
       document.getElementById('ooo'),
       document.getElementById('color-editor-container'),
       resizeColorEditor,
     );
+
     this.addResizeObserver(
       document.getElementById('color-editor-container'),
+      document.getElementById('lightness-blocks'),
+      resizeLeftContent,
+    );
+
+    this.addResizeObserver(
+      document.getElementById('color-editor-container'),
+      document.getElementById('right-container'),
+      resizeRightContent,
+    );
+
+    this.addResizeObserver(
+      document.getElementById('right-container'),
       document.getElementById('block-sliders'),
       resizeBlockSliders,
     );
     this.addResizeObserver(
-      document.getElementById('color-editor-container'),
+      document.getElementById('right-container'),
       document.getElementById('top'),
       resizeTop,
+    );
+
+    // top
+    this.addResizeObserver(
+      document.getElementById('top'),
+      document.getElementById('main'),
+      resizeMain,
+    );
+    this.addResizeObserver(
+      document.getElementById('top'),
+      document.getElementById('rgb-cmyk'),
+      resizeRgbCmyk,
+    );
+
+    this.addResizeObserver(
+      document.getElementById('top'),
+      document.getElementById('rgb'),
+      resizeRgb,
+    );
+    this.addResizeObserver(
+      document.getElementById('top'),
+      document.getElementById('cmyk'),
+      resizeCmyk,
+    );
+
+    // bottom
+    this.addResizeObserver(
+      document.getElementById('block-sliders'),
+      document.getElementById('hsl'),
+      resizeHsl,
+    );
+    this.addResizeObserver(
+      document.getElementById('block-sliders'),
+      document.getElementById('hsv'),
+      resizeHsv,
     );
   }
 
