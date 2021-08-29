@@ -22,6 +22,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "hsluv": "0.0.3"
+    "hsluv": "0.0.3",
+    "resize-observer-polyfill": "^1.5.1"
   }
 }

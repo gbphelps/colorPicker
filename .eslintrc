@@ -6,6 +6,7 @@
     "rules": {
         "no-mixed-operators": "off",
         "no-plusplus": "off",
-        "no-continue": "off"
+        "no-continue": "off",
+        "class-methods-use-this": "off"
     }
 }

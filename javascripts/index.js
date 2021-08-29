@@ -8,9 +8,7 @@ import makelightnessBlocks from './lightnessBlocks';
 import buildChannels from './sliderSet';
 import makeColorPalette from './makeColorPalette';
 
-document.addEventListener('DOMContentLoaded', () => {
-  setup();
-});
+document.addEventListener('DOMContentLoaded', setup);
 
 function setup() {
   resizeEvent.init();
