@@ -1,7 +1,12 @@
 import mainColor from './ColorObject';
 import namedColors from './namedColors';
 import hsvFromRGB from './colorMethods/hsvFromRGB';
-import { CHAN_MAX } from './colorMathConstants';
+import { CHAN_MAX, COLOR_ORD } from './colorMathConstants';
+
+function getChannels(colorspace) {
+  return Object.keys(COLOR_ORD[colorspace])
+    .sort((a, b) => COLOR_ORD[colorspace][a] - COLOR_ORD[colorspace][b]);
+}
 
 function hexFromRGB(rgb) {
   const color = [
@@ -73,7 +78,7 @@ function inputEvent(e) {
   const values = e.target.innerText.split(',').map((v) => +v);
   if (values.some((v) => isNaN(v) || v < 0)) return;
 
-  const keys = Object.keys(mainColor.color[colorspace]);
+  const keys = getChannels(colorspace);
 
   if (keys.some((k, i) => {
     const v = values[i];
@@ -89,45 +94,54 @@ function inputEvent(e) {
   }, {}));
 }
 
+function rgbFromHex(str) {
+  const doubleRx = /^#([0-9,a-f,A-F]{2})([0-9,a-f,A-F]{2})([0-9,a-f,A-F]{2})$/;
+  const singleRx = /^#([0-9,a-f,A-F]{1})([0-9,a-f,A-F]{1})([0-9,a-f,A-F]{1})$/;
+  const [, r, g, b] = doubleRx.exec(str) || singleRx.exec(str) || {};
+  if (r == null || g == null || b == null) return null;
+  const [red, green, blue] = [r, g, b].map((numStr) => {
+    if (numStr.length === 1) numStr += numStr;
+    return parseInt(numStr, 16);
+  });
+  return { red, green, blue };
+}
+
+function nameEvent(e) {
+  const name = e.target.innerText;
+  const rgb = rgbFromHex(namedColors[name]);
+  if (namedColors[name] && rgb) mainColor.set('rgb', rgb);
+}
+
+function hexEvent(e) {
+  const rgb = rgbFromHex(e.target.innerText);
+
+  mainColor.set('rgb', rgb);
+}
+
+function basicSwatch(colorspace) {
+  const channels = getChannels(colorspace).map((c) => Math.round(mainColor.color[colorspace][c]));
+  return `
+    <div>
+        <div>
+            <span style="font-weight: 900; color: inherit;">${colorspace.toUpperCase()}(</span>
+            <span id="swatch-input" data-colorspace="${colorspace}" data-event="normal" style="${inputStyle}">
+            ${channels.join(', ')}
+            </span> 
+            <span style="font-weight: 900; color: inherit;">)</span>
+        </div>
+    </div>
+`;
+}
+
 const opts = [
   () => {
     const closest = closestNamedColor(mainColor.color.rgb);
     return `
-            <div style="display: flex; width: 100%; justify-content: space-between">  
-            <div class="color-description">
-                <div id="swatch-input">${closest.color.toUpperCase()}</div>
-                <div>${closest.distance}% match</div>
-            </div>
-            </div>
-        `;
-  },
-  () => {
-    const { color: { rgb: { red, green, blue } } } = mainColor;
-    return `
-            <div>
-            <span style="font-weight: 900; color: inherit;">RGB(</span>
-            <span id="swatch-input" data-colorspace="rgb" style="${inputStyle}">
-            ${Math.round(red)}, ${Math.round(green)}, ${Math.round(blue)}
-            </span> 
-            <span style="font-weight: 900; color: inherit;">)</span>
-            </div>
-        `;
-  },
-  () => {
-    const {
-      color: {
-        cmyk: {
-          cyan, magenta, yellow, black,
-        },
-      },
-    } = mainColor;
-    return `
-            <div>
-            <span style="font-weight: 900; color: inherit;">CMYK(</span>
-            <span id="swatch-input" data-colorspace="cmyk" style="${inputStyle}">
-            ${Math.round(cyan)}, ${Math.round(magenta)}, ${Math.round(yellow)}, ${Math.round(black)}
-            </span>
-            <span style="font-weight: 900; color: inherit;">)</span>
+            <div>  
+                <div class="color-description">
+                    <div id="swatch-input" data-event="name" style="outline: none">${closest.color.toUpperCase()}</div>
+                    <div>${closest.distance}% match</div>
+                </div>
             </div>
         `;
   },
@@ -140,30 +154,54 @@ const opts = [
     const color = hexFromRGB(rgb);
     return `
             <div>
-            <div style="font-weight: 900; color: inherit;">HEXADECIMAL</div>
-            <span id="swatch-input" style="${inputStyle}">${color}</span>
+                <div>
+                <span style="font-weight: 900; color: inherit;">HEX </span>
+                <span id="swatch-input" data-event="hex" style="${inputStyle}">${color}</span>
+                </div>
             </div>
         `;
   },
+  () => basicSwatch('rgb'),
+  () => basicSwatch('cmyk'),
+  () => basicSwatch('hsl'),
+  () => basicSwatch('hsv'),
 ];
 
-export default function makeColorPalette({ target }) {
-  let showIdx = 0;
-  const currentColor = document.createElement('div');
-  currentColor.classList.add('current-color');
-  currentColor.addEventListener('click', () => {
-    showIdx = (showIdx + 1) % opts.length;
-    currentColor.innerHTML = opts[showIdx]();
-    const swatch = document.getElementById('swatch-input');
-    swatch.addEventListener('input', inputEvent);
-    swatch.addEventListener('click', (e) => { e.stopPropagation(); });
-    swatch.addEventListener('blur', () => {
-      currentColor.innerHTML = opts[showIdx]();
-    });
-    swatch.contentEditable = true;
+const EVENTS = {
+  name: nameEvent,
+  normal: inputEvent,
+  hex: hexEvent,
+};
+
+function prepareEditableContent(element, showIdx) {
+  element.innerHTML = opts[showIdx.current]();
+
+  const swatch = document.getElementById('swatch-input');
+  swatch.contentEditable = true;
+  swatch.addEventListener('input', EVENTS[swatch.dataset.event]);
+  swatch.addEventListener('click', (e) => { e.stopPropagation(); });
+  swatch.addEventListener('blur', () => {
+    prepareEditableContent(element, showIdx);
   });
 
+  const caret = document.createElement('div');
+  caret.classList.add('caret');
+  caret.innerHTML = '&rsaquo;';
+
+  element.firstElementChild.appendChild(caret);
+  caret.addEventListener('click', () => {
+    showIdx.current = (showIdx.current + 1) % opts.length;
+    prepareEditableContent(element, showIdx);
+  });
+}
+
+export default function makeColorPalette({ target }) {
+  const showIdx = { current: 0 };
+  const currentColor = document.createElement('div');
+  currentColor.classList.add('current-color');
   target.appendChild(currentColor);
+  prepareEditableContent(currentColor, showIdx);
+
   mainColor.subscribe((COLOR) => {
     const hexColor = hexFromRGB(COLOR.rgb);
     currentColor.style.background = hexColor;
@@ -171,6 +209,6 @@ export default function makeColorPalette({ target }) {
     currentColor.classList.remove(isDark(COLOR.rgb) ? 'light' : 'dark');
 
     if (document.activeElement.id === 'swatch-input') return;
-    currentColor.innerHTML = opts[showIdx]();
+    prepareEditableContent(currentColor, showIdx);
   });
 }

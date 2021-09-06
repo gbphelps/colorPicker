@@ -14,6 +14,22 @@ export const COLOR_ORD = {
     saturation: 1,
     value: 2,
   },
+  rgb: {
+    red: 0,
+    green: 1,
+    blue: 2,
+  },
+  cmyk: {
+    cyan: 0,
+    magenta: 1,
+    yellow: 2,
+    black: 3,
+  },
+  hsluv: {
+    hue: 0,
+    saturation: 1,
+    lightness: 2,
+  },
 };
 
 export const CHAN_MAX = {
