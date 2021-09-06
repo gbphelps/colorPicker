@@ -109,7 +109,10 @@ function rgbFromHex(str) {
 function nameEvent(e) {
   const name = e.target.innerText;
   const rgb = rgbFromHex(namedColors[name]);
-  if (namedColors[name] && rgb) mainColor.set('rgb', rgb);
+  if (namedColors[name] && rgb) {
+    mainColor.set('rgb', rgb);
+    document.getElementById('percent-match').innerHTML = '100% match';
+  }
 }
 
 function hexEvent(e) {
@@ -140,7 +143,7 @@ const opts = [
             <div>  
                 <div class="color-description">
                     <div id="swatch-input" data-event="name" style="outline: none">${closest.color.toUpperCase()}</div>
-                    <div>${closest.distance}% match</div>
+                    <div id="percent-match">${closest.distance}% match</div>
                 </div>
             </div>
         `;
