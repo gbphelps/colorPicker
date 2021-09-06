@@ -97,7 +97,7 @@ function inputEvent(e) {
 function rgbFromHex(str) {
   const doubleRx = /^#([0-9,a-f,A-F]{2})([0-9,a-f,A-F]{2})([0-9,a-f,A-F]{2})$/;
   const singleRx = /^#([0-9,a-f,A-F]{1})([0-9,a-f,A-F]{1})([0-9,a-f,A-F]{1})$/;
-  const [, r, g, b] = doubleRx.exec(str) || singleRx.exec(str) || {};
+  const [, r, g, b] = doubleRx.exec(str) || singleRx.exec(str) || [];
   if (r == null || g == null || b == null) return null;
   const [red, green, blue] = [r, g, b].map((numStr) => {
     if (numStr.length === 1) numStr += numStr;

@@ -87,7 +87,7 @@ export default function makeXYSlider({
     position: 'absolute',
     margin: 0,
     transform: 'translateX(-50%)',
-    bottom: 0,
+    top: `calc(100% - ${outerMargin}px)`,
   });
   inputX.addEventListener('input', (e) => {
     e.preventDefault();
