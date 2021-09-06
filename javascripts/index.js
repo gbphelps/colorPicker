@@ -23,13 +23,13 @@ function setup() {
     target: document.getElementById('hsl'),
   });
 
-  makeBlockWithSlider({
-    xChannel: 'saturation',
-    yChannel: 'value',
-    zChannel: 'hue',
-    colorSpace: 'hsv',
-    target: document.getElementById('hsv'),
-  });
+  // makeBlockWithSlider({
+  //   xChannel: 'saturation',
+  //   yChannel: 'value',
+  //   zChannel: 'hue',
+  //   colorSpace: 'hsv',
+  //   target: document.getElementById('hsv'),
+  // });
 
   makeHueSlider(document.getElementById('main'));
   makeTriangle(document.getElementById('main'));
@@ -53,6 +53,6 @@ function setup() {
 
   makelightnessBlocks('hsl', { name: 'lightness', max: 100 }, document.getElementById('lightness-blocks-l'));
   makelightnessBlocks('hsl', { name: 'saturation', max: 100 }, document.getElementById('lightness-blocks-s'));
-  // makeColorPalette({ target: document.getElementById('color-palette') });
+  makeColorPalette({ target: document.getElementById('color-palette') });
   mainColor.set('rgb', { red: 50, green: 100, blue: 200 });
 }

@@ -23,13 +23,14 @@ class ResizeEvents {
     const top = document.getElementById('top');
     const main = document.getElementById('main');
     const hsl = document.getElementById('hsl');
-    const hsv = document.getElementById('hsv');
+    // const hsv = document.getElementById('hsv');
     const lb = document.getElementById('lightness-blocks');
     const rc = document.getElementById('right-container');
 
     const rgbcmyk = document.getElementById('rgb-cmyk');
     const rgb = document.getElementById('rgb');
     const cmyk = document.getElementById('cmyk');
+    const palette = document.getElementById('color-palette');
 
     const minRatio = 1.6;
     const maxRatio = 1.8;
@@ -65,8 +66,8 @@ class ResizeEvents {
     const rightWidth = container.width - MARGIN - lbWidth;
 
     rc.style.width = `${rightWidth}px`;
-    hsl.style.width = `${(rightWidth - MARGIN) * 0.55}px`;
-    hsv.style.width = `${(rightWidth - MARGIN) * 0.45}px`;
+    hsl.style.width = `${(rightWidth - MARGIN) * 0.65}px`;
+    palette.style.width = `${(rightWidth - MARGIN) * 0.35}px`;
 
     rgbcmyk.style.width = `${rightWidth - MARGIN - topHeight}px`;
     rgbcmyk.style.height = `${topHeight}px`;
